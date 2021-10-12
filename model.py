@@ -31,14 +31,13 @@ class Res34Net(nn.Module):
 
     def __init__(self, layers, block=BasicBlock, num_class=10):
         super(Res34Net, self).__init__()
-        self.conv = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3)
+        self.conv = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1)
         self.bn = nn.BatchNorm2d(64)
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.layer1 = self.make_layer(in_channels=64, out_channels=64, block=block, num_block=layers[0])
+        self.layer1 = self.make_layer(in_channels=64, out_channels=64, block=block, num_block=layers[0],stride=2)
         self.layer2 = self.make_layer(in_channels=64, out_channels=128, block=block, num_block=layers[1], stride=2)
         self.layer3 = self.make_layer(in_channels=128, out_channels=256, block=block, num_block=layers[2], stride=2)
         self.layer4 = self.make_layer(in_channels=256, out_channels=512, block=block, num_block=layers[3], stride=2)
-        self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(512, num_class)
     def make_layer(self, block, in_channels, out_channels, num_block, stride=1, downsample=None):
         if in_channels != out_channels or stride != 1:
@@ -57,7 +56,6 @@ class Res34Net(nn.Module):
         out = self.layer2(out)
         out = self.layer3(out)
         out = self.layer4(out)
-        out = self.avg_pool(out)
         out = out.view(x.shape[0], -1)
         out = self.fc(out)
         return out

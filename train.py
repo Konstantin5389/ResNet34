@@ -4,7 +4,7 @@ from data import train_loader, test_loader
 from model import Res34Net
 
 model = Res34Net([3, 4, 6, 3]).cuda()
-num_epoch = 10
+num_epoch = 20
 lr = 0.01
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9)
